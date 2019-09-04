@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += sql widgets
 
 TARGET = MyFinance
 TEMPLATE = app
@@ -25,10 +25,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    account.cpp \
+    IPersistenceProvider.cpp \
+    PostgreSqlPersistenceProvider.cpp \
+    DataBaseManager.cpp \
+    SqlitePersistenceProvider.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    Account.h \
+    DataBaseManager.h \
+    IPersistenceProvider.h \
+    PostgreSqlPersistenceProvider.h \
+    SqlitePersistenceProvider.h
 
 FORMS += \
         mainwindow.ui
