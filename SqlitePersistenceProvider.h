@@ -3,10 +3,10 @@
 
 #include <QSqlDatabase>
 
-#include "IPersistenceProvider.h"
+#include "PersistenceProvider.h"
 
 class SqlitePersistenceProvider :
-        public IPersistenceProvider
+        public PersistenceProvider
 {
 public:
     SqlitePersistenceProvider();

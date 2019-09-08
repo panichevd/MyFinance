@@ -25,20 +25,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    account.cpp \
-    IPersistenceProvider.cpp \
-    PostgreSqlPersistenceProvider.cpp \
     DataBaseManager.cpp \
-    SqlitePersistenceProvider.cpp
+    SqlitePersistenceProvider.cpp \
+    Account.cpp \
+    MainWindow.cpp
 
 HEADERS += \
-        mainwindow.h \
     Account.h \
     DataBaseManager.h \
     IPersistenceProvider.h \
-    PostgreSqlPersistenceProvider.h \
-    SqlitePersistenceProvider.h
+    SqlitePersistenceProvider.h \
+    PersistenceProvider.h \
+    MainWindow.h
 
 FORMS += \
         mainwindow.ui

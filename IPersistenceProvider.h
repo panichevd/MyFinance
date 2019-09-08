@@ -1,6 +1,13 @@
 #ifndef IPERSISTENCEPROVIDER_H
 #define IPERSISTENCEPROVIDER_H
 
+// TODO: this is supposed to be just an interface!
+
+#include <QVector>
+
+#include <memory>
+
+#include "Account.h"
 
 class IPersistenceProvider
 {
@@ -10,7 +17,7 @@ public:
 
     virtual bool read_data() = 0;
 
-    // TODO: virtual const QVector<std::unique_ptr<Account>> & accounts() = 0;
+    virtual const QVector<Account> & accounts() const noexcept = 0;
 };
 
 #endif // IPERSISTENCEPROVIDER_H

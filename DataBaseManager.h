@@ -11,6 +11,9 @@ public:
     DataBaseManager();
     ~DataBaseManager() = default;
 
+    const QVector<Account> & accounts() const
+    { return m_persistence_provider->accounts(); }
+
 private:
     std::unique_ptr<IPersistenceProvider> m_persistence_provider;
 };

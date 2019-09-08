@@ -6,9 +6,10 @@
 class Account
 {
 public:
-    Account();
+    Account(int id, const QString & name, int balance);
 
-private:
+//private:
+    int m_id; // TODO: int??
     QString m_name;
     int m_balance;
     //TODO: Ccy

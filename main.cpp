@@ -1,5 +1,7 @@
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include <QApplication>
+
+// TODO: namespace
 
 int main(int argc, char *argv[])
 {

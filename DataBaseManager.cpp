@@ -1,5 +1,4 @@
 #include "DataBaseManager.h"
-#include "PostgreSqlPersistenceProvider.h"
 #include "SqlitePersistenceProvider.h"
 
 DataBaseManager::DataBaseManager() :

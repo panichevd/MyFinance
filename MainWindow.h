@@ -5,6 +5,8 @@
 
 #include "DataBaseManager.h"
 
+// TODO: MVC
+
 namespace Ui {
 class MainWindow;
 }
@@ -18,12 +20,13 @@ public:
     ~MainWindow();
 
 public slots:
-    void new_transaction_slot();
+    void new_account_slot();
+
+private:
+    void setup_accounts();
 
 private:
     Ui::MainWindow *ui;
-
-    QAction *new_transaction_action = nullptr;
 
 private:
     DataBaseManager m_db_manager;
