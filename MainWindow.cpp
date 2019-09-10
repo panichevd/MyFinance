@@ -3,6 +3,7 @@
 #include "Account.h"
 
 #include <QTabWidget>
+#include <QTableView>
 #include <QPushButton>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -26,16 +27,14 @@ void MainWindow::setup_accounts()
                 Qt::FindChildrenRecursively);
     connect(new_account_button, SIGNAL(pressed()), this, SLOT(new_account_slot()));
 
-    auto accounts_list =
-            accounts_tab->findChild<QListWidget*>(
-                QString("accountsList"),
-                Qt::FindChildrenRecursively);
-    for (const auto & account : m_db_manager.accounts()) {
-        accounts_list->addItem(account.m_name);
-    }
+    auto accounts_view =
+                accounts_tab->findChild<QTableView*>(
+                    QString("accountsView"),
+                    Qt::FindChildrenRecursively);
+    accounts_view->setModel(m_db_manager.accounts_model());
+    accounts_view->show();
 
     // TODO: some action on account click
-    // TODO: change QListWidget to QTableWidget (for now), then use MVC (later)
 }
 
 MainWindow::~MainWindow()

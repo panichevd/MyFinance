@@ -7,7 +7,8 @@
 #include <QSqlQuery>
 #include <QStringList>
 
-SqlitePersistenceProvider::SqlitePersistenceProvider()
+SqlitePersistenceProvider::SqlitePersistenceProvider() :
+    PersistenceProvider()
 {
     static const QString driver = "QSQLITE";
 
@@ -23,6 +24,8 @@ SqlitePersistenceProvider::SqlitePersistenceProvider()
         // TODO: throw exception
         return;
     }
+
+    m_accounts_model = new QSqlTableModel(this, db);
 }
 
 bool SqlitePersistenceProvider::read_data()
@@ -39,22 +42,8 @@ bool SqlitePersistenceProvider::read_data()
         return false;
     }
 
-    if (!query.exec("SELECT * FROM accounts")) {
-        qDebug() << "Sql Error: " << query.executedQuery() << endl << query.lastError().text() << endl;
-        return false;
-    }
-
-    int idx_id      = query.record().indexOf("id");
-    int idx_name    = query.record().indexOf("name");
-    int idx_balance = query.record().indexOf("balance");
-    while (query.next()) {
-        m_accounts.push_back(
-                    Account(
-                        query.value(idx_id).toInt(),
-                        query.value(idx_name).toString(),
-                        query.value(idx_balance).toInt()
-                    ));
-    }
+    m_accounts_model->setTable("accounts");
+    m_accounts_model->select();
 
     return true;
 }

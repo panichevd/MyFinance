@@ -31,7 +31,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QListWidget" name="accountsList"/>
+           <widget class="QTableView" name="accountsView"/>
           </item>
           <item>
            <widget class="QPushButton" name="newAccount">

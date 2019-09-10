@@ -1,23 +1,24 @@
 #ifndef IPERSISTENCEPROVIDER_H
 #define IPERSISTENCEPROVIDER_H
 
-// TODO: this is supposed to be just an interface!
-
-#include <QVector>
+#include <QObject>
+#include <QSqlTableModel>
 
 #include <memory>
 
 #include "Account.h"
 
-class IPersistenceProvider
+class IPersistenceProvider : public QObject
 {
+    Q_OBJECT
+
 public:
     IPersistenceProvider() = default;
     virtual ~IPersistenceProvider() = default;
 
     virtual bool read_data() = 0;
 
-    virtual const QVector<Account> & accounts() const noexcept = 0;
+    virtual QSqlTableModel* & model() = 0;
 };
 
 #endif // IPERSISTENCEPROVIDER_H

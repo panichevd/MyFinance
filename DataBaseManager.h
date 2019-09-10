@@ -5,14 +5,15 @@
 
 #include "IPersistenceProvider.h"
 
+// TODO: create custom table model to work with accounts
 class DataBaseManager
 {
 public:
     DataBaseManager();
     ~DataBaseManager() = default;
 
-    const QVector<Account> & accounts() const
-    { return m_persistence_provider->accounts(); }
+    QSqlTableModel* & accounts_model()
+    { return m_persistence_provider->model(); }
 
 private:
     std::unique_ptr<IPersistenceProvider> m_persistence_provider;

@@ -10,12 +10,11 @@ public:
     PersistenceProvider() = default;
     virtual ~PersistenceProvider() = default;
 
-    virtual const QVector<Account> & accounts() const noexcept
-    { return m_accounts; }
+    virtual QSqlTableModel* & model()
+    { return m_accounts_model; }
 
 protected:
-    // TODO: shared_ptr ?
-    QVector<Account> m_accounts;
+    QSqlTableModel *m_accounts_model = nullptr;
 };
 
 #endif // PERSISTENCEPROVIDER_H
