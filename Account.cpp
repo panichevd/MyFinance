@@ -1,7 +1,6 @@
 #include "Account.h"
 
-Account::Account(int id, const QString & name, int balance) :
-    m_id(id),
+Account::Account(const QString & name, int balance) :
     m_name(name),
     m_balance(balance)
 {

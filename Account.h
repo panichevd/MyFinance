@@ -6,14 +6,22 @@
 class Account
 {
 public:
-    Account(int id, const QString & name, int balance);
+    Account(const QString & name, int balance);
 
-//private:
-    int m_id; // TODO: int??
+    QString name() const
+    { return m_name; }
+    void set_name(const QString &name)
+    { m_name = name; }
+
+    int balance() const
+    { return m_balance; }
+    void set_balance(int balance)
+    { m_balance = balance; }
+
+private:
     QString m_name;
     int m_balance;
     //TODO: Ccy
-    //TODO: date created
 };
 
 #endif // ACCOUNT_H

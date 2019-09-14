@@ -17,10 +17,10 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    ~MainWindow();  
 
-public slots:
-    void new_account_slot();
+private slots:
+    void on_newAccount_clicked();
 
 private:
     void setup_accounts();

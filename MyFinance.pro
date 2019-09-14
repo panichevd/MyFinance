@@ -28,7 +28,8 @@ SOURCES += \
     DataBaseManager.cpp \
     SqlitePersistenceProvider.cpp \
     Account.cpp \
-    MainWindow.cpp
+    MainWindow.cpp \
+    NewAccountDialog.cpp
 
 HEADERS += \
     Account.h \
@@ -36,7 +37,9 @@ HEADERS += \
     IPersistenceProvider.h \
     SqlitePersistenceProvider.h \
     PersistenceProvider.h \
-    MainWindow.h
+    MainWindow.h \
+    NewAccountDialog.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    NewAccountDialog.ui
