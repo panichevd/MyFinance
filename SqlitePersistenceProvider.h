@@ -12,10 +12,14 @@ public:
     SqlitePersistenceProvider();
     virtual ~SqlitePersistenceProvider();
 
-    virtual bool read_data();
+    virtual void read_data() override final;
 
 private:
-    QSqlDatabase db;
+    void read_accounts();
+    void read_transactions();
+
+private:
+    QSqlDatabase m_db;
 };
 
 #endif // SQLITEPERSISTENCEPROVIDER_H

@@ -65,6 +65,26 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="transactionsTab">
+       <attribute name="title">
+        <string>Transactions</string>
+       </attribute>
+       <widget class="QWidget" name="horizontalLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>931</width>
+          <height>461</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QListWidget" name="listWidget"/>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>

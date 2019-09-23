@@ -14,6 +14,9 @@ public:
     QSqlTableModel* & accounts_model()
     { return m_persistence_provider->model(); }
 
+    IPersistenceProvider::Transactions & transactions()
+    { return m_persistence_provider->transactions(); }
+
     void add_account(const Account & account);
 
 private:

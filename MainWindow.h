@@ -5,8 +5,6 @@
 
 #include "DataBaseManager.h"
 
-// TODO: MVC
-
 namespace Ui {
 class MainWindow;
 }
@@ -24,6 +22,7 @@ private slots:
 
 private:
     void setup_accounts();
+    void setup_transactions();
 
 private:
     Ui::MainWindow *ui;
