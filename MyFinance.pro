@@ -29,7 +29,8 @@ SOURCES += \
     SqlitePersistenceProvider.cpp \
     Account.cpp \
     MainWindow.cpp \
-    NewAccountDialog.cpp
+    NewAccountDialog.cpp \
+    NewTransactionDialog.cpp
 
 HEADERS += \
     Account.h \
@@ -38,8 +39,10 @@ HEADERS += \
     SqlitePersistenceProvider.h \
     PersistenceProvider.h \
     MainWindow.h \
-    NewAccountDialog.h
+    NewAccountDialog.h \
+    NewTransactionDialog.h
 
 FORMS += \
         mainwindow.ui \
-    NewAccountDialog.ui
+    NewAccountDialog.ui \
+    NewTransactionDialog.ui

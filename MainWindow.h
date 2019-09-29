@@ -18,7 +18,8 @@ public:
     ~MainWindow();  
 
 private slots:
-    void on_newAccount_clicked();
+    void on_newAccountButton_clicked();
+    void on_newTransactionButton_clicked();
 
 private:
     void setup_accounts();

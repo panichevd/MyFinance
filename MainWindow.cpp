@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "Account.h"
 #include "NewAccountDialog.h"
+#include "NewTransactionDialog.h"
 
 #include <QDebug>
 
@@ -37,6 +38,7 @@ void MainWindow::setup_accounts()
     // TODO: open account edit view on account click
 }
 
+// TODO: inherit from QListWiedget
 void MainWindow::setup_transactions()
 {
     // TODO: QFont, then calculate size based on date item size
@@ -60,17 +62,15 @@ void MainWindow::setup_transactions()
 
         QTableView * view = new QTableView(this);
         view->setModel(transaction.second);
+        view->setColumnHidden(0, true);
+        view->verticalHeader()->setVisible(false);
         view->setFont(font);
 
         QListWidgetItem * item2 = new QListWidgetItem;
 
         item2->setSizeHint(QSize(200, 4*label->sizeHint().height()));
         transactions_list->addItem(item2);
-
-        QScrollArea * area = new QScrollArea;
-        area->setWidgetResizable(true);
-        area->setWidget(view);
-        transactions_list->setItemWidget(item2, area);
+        transactions_list->setItemWidget(item2, view);
     }
 }
 
@@ -79,8 +79,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_newAccount_clicked()
+void MainWindow::on_newAccountButton_clicked()
 {
     NewAccountDialog dialog(m_db_manager);
+    dialog.exec();
+}
+
+void MainWindow::on_newTransactionButton_clicked()
+{
+    NewTransactionDialog dialog(m_db_manager);
     dialog.exec();
 }
