@@ -1,12 +1,10 @@
 #include "MainWindow.h"
 #include <QApplication>
 
-// TODO: namespace
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    MyFinance::MainWindow w;
     w.show();
 
     return a.exec();

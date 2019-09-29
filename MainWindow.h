@@ -5,6 +5,8 @@
 
 #include "DataBaseManager.h"
 
+namespace MyFinance {
+
 namespace Ui {
 class MainWindow;
 }
@@ -31,5 +33,7 @@ private:
 private:
     DataBaseManager m_db_manager;
 };
+
+} //namespace MyFinance
 
 #endif // MAINWINDOW_H

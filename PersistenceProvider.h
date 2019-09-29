@@ -4,6 +4,8 @@
 #include "IPersistenceProvider.h"
 #include "TransactionsModel.h"
 
+namespace MyFinance {
+
 class PersistenceProvider :
         public IPersistenceProvider
 {
@@ -22,5 +24,7 @@ protected:
 
     Transactions m_transactions;
 };
+
+} //namespace MyFinance
 
 #endif // PERSISTENCEPROVIDER_H

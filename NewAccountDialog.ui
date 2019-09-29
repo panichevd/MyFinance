@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NewAccountDialog</class>
- <widget class="QDialog" name="NewAccountDialog">
+ <class>MyFinance::NewAccountDialog</class>
+ <widget class="QDialog" name="MyFinance::NewAccountDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -117,7 +117,7 @@
   <connection>
    <sender>pushButton</sender>
    <signal>clicked()</signal>
-   <receiver>NewAccountDialog</receiver>
+   <receiver>MyFinance::NewAccountDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

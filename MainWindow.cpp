@@ -12,6 +12,8 @@
 #include <QTableView>
 #include <QPushButton>
 
+namespace MyFinance {
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -90,3 +92,5 @@ void MainWindow::on_newTransactionButton_clicked()
     NewTransactionDialog dialog(m_db_manager);
     dialog.exec();
 }
+
+} //namespace MyFinance

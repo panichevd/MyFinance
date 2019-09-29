@@ -5,6 +5,8 @@
 
 #include "PersistenceProvider.h"
 
+namespace MyFinance {
+
 class SqlitePersistenceProvider :
         public PersistenceProvider
 {
@@ -21,5 +23,7 @@ private:
 private:
     QSqlDatabase m_db;
 };
+
+} //namespace MyFinance
 
 #endif // SQLITEPERSISTENCEPROVIDER_H

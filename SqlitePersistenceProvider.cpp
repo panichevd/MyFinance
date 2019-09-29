@@ -7,6 +7,8 @@
 #include <QSqlQuery>
 #include <QStringList>
 
+namespace MyFinance {
+
 SqlitePersistenceProvider::SqlitePersistenceProvider() :
     PersistenceProvider()
 {
@@ -73,13 +75,11 @@ void SqlitePersistenceProvider::read_transactions()
                     ". Executing query: " + query.executedQuery());
     }
 
-    query.prepare("SELECT date FROM transactions;");
+    query.prepare("SELECT date FROM transactions ORDER BY date DESC;");
     query.exec();
 
     while (query.next()) {
         QString date = query.value(0).toString();
-
-        qDebug() << date;
 
         QSqlTableModel *transactions_model = new QSqlTableModel(this, m_db);
         transactions_model->setTable("transactions");
@@ -89,8 +89,14 @@ void SqlitePersistenceProvider::read_transactions()
         m_transactions[date] = transactions_model;
     }
 
+    /*for (int i = 1; i < 20; ++ i) {
+        query.prepare("INSERT INTO transactions (id, sum, account_id, date, time) VALUES(" + QString::number(i) + ", 300, 1, date('" + QString::number(2010 + i) + "-10-16'), time('now'));");
+        query.exec();
+    }*/
     /*query.prepare("INSERT INTO transactions (id, sum, account_id, date, time) VALUES(3, 300, 1, date('2015-10-16'), time('now'));");
     query.exec();
     qDebug() << "Sql Error: "         + query.lastError().text() +
                 ". Executing query: " + query.executedQuery();*/
 }
+
+} //namespace MyFinance

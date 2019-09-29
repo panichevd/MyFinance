@@ -5,6 +5,8 @@
 
 #include "IPersistenceProvider.h"
 
+namespace MyFinance {
+
 class DataBaseManager
 {
 public:
@@ -22,5 +24,7 @@ public:
 private:
     std::unique_ptr<IPersistenceProvider> m_persistence_provider;
 };
+
+} //namespace MyFinance
 
 #endif // DATABASEMANAGER_H

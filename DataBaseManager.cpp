@@ -3,6 +3,8 @@
 #include "DataBaseManager.h"
 #include "SqlitePersistenceProvider.h"
 
+namespace MyFinance {
+
 DataBaseManager::DataBaseManager() :
     m_persistence_provider(nullptr)
 {
@@ -21,3 +23,5 @@ void DataBaseManager::add_account(const Account & account)
     accounts_model()->insertRecord(-1, record);
     accounts_model()->submitAll();
 }
+
+} //namespace MyFinance

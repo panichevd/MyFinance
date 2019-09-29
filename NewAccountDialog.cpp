@@ -3,15 +3,19 @@
 #include "NewAccountDialog.h"
 #include "ui_NewAccountDialog.h"
 
+namespace MyFinance {
+
 NewAccountDialog::NewAccountDialog(DataBaseManager & dbm, QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint),
     ui(new Ui::NewAccountDialog),
     m_dbm(dbm)
 {
+    setWindowTitle("New account");
+
     ui->setupUi(this);
 
-    ui->balanceLineEdit->setValidator(new QDoubleValidator(ui->balanceLineEdit));
-    // TODO: no question mark
+    ui->balanceLineEdit->setValidator(
+                new QDoubleValidator(ui->balanceLineEdit));
 }
 
 NewAccountDialog::~NewAccountDialog()
@@ -28,3 +32,5 @@ void NewAccountDialog::on_buttonOK_clicked()
 
     accept();
 }
+
+} //namespace MyFinance

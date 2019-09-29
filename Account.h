@@ -3,6 +3,8 @@
 
 #include <QString>
 
+namespace MyFinance {
+
 class Account
 {
 public:
@@ -23,5 +25,7 @@ private:
     double m_balance;
     //TODO: Ccy
 };
+
+} //namespace MyFinance
 
 #endif // ACCOUNT_H

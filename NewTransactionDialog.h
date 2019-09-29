@@ -5,6 +5,8 @@
 
 #include "DataBaseManager.h"
 
+namespace MyFinance {
+
 namespace Ui {
 class NewTransactionDialog;
 }
@@ -24,3 +26,5 @@ private:
 };
 
 #endif // NEWTRANSACTIONDIALOG_H
+
+} //namespace MyFinance

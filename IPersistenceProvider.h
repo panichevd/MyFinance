@@ -9,6 +9,8 @@
 
 #include "Account.h"
 
+namespace MyFinance {
+
 class PersistenceException : public QException
 {
 public:
@@ -36,7 +38,10 @@ class IPersistenceProvider : public QObject
     Q_OBJECT
 
 public:
-    typedef std::map<QString, QSqlTableModel*> Transactions;
+    typedef std::map<
+        QString,
+        QSqlTableModel*,
+        std::greater<QString>> Transactions;
 
 public:
     IPersistenceProvider() = default;
@@ -47,5 +52,7 @@ public:
     virtual QSqlTableModel* & model() = 0;
     virtual Transactions    & transactions() = 0;
 };
+
+} //namespace MyFinance
 
 #endif // IPERSISTENCEPROVIDER_H
