@@ -51,6 +51,12 @@ public:
 
     virtual QSqlTableModel* & model() = 0;
     virtual Transactions    & transactions() = 0;
+
+    virtual void add_transaction(
+            double sum,
+            int account_id,
+            const QDate & date,
+            const QTime & time) = 0;
 };
 
 } //namespace MyFinance

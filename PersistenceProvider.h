@@ -2,7 +2,6 @@
 #define PERSISTENCEPROVIDER_H
 
 #include "IPersistenceProvider.h"
-#include "TransactionsModel.h"
 
 namespace MyFinance {
 

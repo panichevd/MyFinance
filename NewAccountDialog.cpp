@@ -23,14 +23,14 @@ NewAccountDialog::~NewAccountDialog()
     delete ui;
 }
 
-void NewAccountDialog::on_buttonOK_clicked()
+void NewAccountDialog::accept()
 {
     auto name = ui->nameLineEdit->text();
     auto balance = ui->balanceLineEdit->text().toDouble();
 
     m_dbm.add_account(Account(name, balance));
 
-    accept();
+    QDialog::accept();
 }
 
 } //namespace MyFinance

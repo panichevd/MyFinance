@@ -130,5 +130,21 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonOK</sender>
+   <signal>clicked()</signal>
+   <receiver>MyFinance::NewAccountDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>111</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>82</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

@@ -21,6 +21,12 @@ public:
 
     void add_account(const Account & account);
 
+    void add_transaction(
+            double sum,
+            int account_id,
+            const QDate & date,
+            const QTime & time);
+
 private:
     std::unique_ptr<IPersistenceProvider> m_persistence_provider;
 };

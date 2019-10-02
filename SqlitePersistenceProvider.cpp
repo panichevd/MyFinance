@@ -1,11 +1,13 @@
 #include "SqlitePersistenceProvider.h"
 #include "Account.h"
 
+#include <QDate>
 #include <QDebug>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlQuery>
 #include <QStringList>
+#include <QTime>
 
 namespace MyFinance {
 
@@ -90,13 +92,28 @@ void SqlitePersistenceProvider::read_transactions()
     }
 
     /*for (int i = 1; i < 20; ++ i) {
-        query.prepare("INSERT INTO transactions (id, sum, account_id, date, time) VALUES(" + QString::number(i) + ", 300, 1, date('" + QString::number(2010 + i) + "-10-16'), time('now'));");
+        query.prepare("INSERT INTO transactions (sum, account_id, date, time) VALUES(" + QString::number(300) + ", 1, date('" + QString::number(2010 + i) + "-10-16'), time('now'));");
         query.exec();
+        qDebug() << "Sql Error: "         + query.lastError().text() +
+                    ". Executing query: " + query.executedQuery();
     }*/
-    /*query.prepare("INSERT INTO transactions (id, sum, account_id, date, time) VALUES(3, 300, 1, date('2015-10-16'), time('now'));");
+}
+
+void SqlitePersistenceProvider::add_transaction(
+        double sum,
+        int account_id,
+        const QDate & date,
+        const QTime & time)
+{
+    QSqlQuery query;
+
+    query.prepare("INSERT INTO transactions (sum, account_id, date, time) "
+                  "VALUES(" +
+                      QString::number(sum) + ", " +
+                      QString::number(account_id) + ", "
+                      "date('" + date.toString("yyyy-MM-dd") + "'), "
+                      "time('" + time.toString() + "'));");
     query.exec();
-    qDebug() << "Sql Error: "         + query.lastError().text() +
-                ". Executing query: " + query.executedQuery();*/
 }
 
 } //namespace MyFinance

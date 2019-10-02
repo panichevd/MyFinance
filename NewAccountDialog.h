@@ -20,7 +20,7 @@ public:
     ~NewAccountDialog();
 
 private slots:
-    void on_buttonOK_clicked();
+    virtual void accept() override;
 
 private:
     Ui::NewAccountDialog *ui;

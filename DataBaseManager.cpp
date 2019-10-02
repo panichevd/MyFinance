@@ -1,5 +1,4 @@
 #include <QSqlRecord>
-
 #include "DataBaseManager.h"
 #include "SqlitePersistenceProvider.h"
 
@@ -22,6 +21,15 @@ void DataBaseManager::add_account(const Account & account)
 
     accounts_model()->insertRecord(-1, record);
     accounts_model()->submitAll();
+}
+
+void DataBaseManager::add_transaction(
+        double sum,
+        int account_id,
+        const QDate & date,
+        const QTime & time)
+{
+    m_persistence_provider->add_transaction(sum, account_id, date, time);
 }
 
 } //namespace MyFinance

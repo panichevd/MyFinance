@@ -16,6 +16,12 @@ public:
 
     virtual void read_data() override final;
 
+    virtual void add_transaction(
+            double sum,
+            int account_id,
+            const QDate & date,
+            const QTime & time) override final;
+
 private:
     void read_accounts();
     void read_transactions();
