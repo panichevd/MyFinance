@@ -27,20 +27,19 @@ SOURCES += \
         main.cpp \
     DataBaseManager.cpp \
     SqlitePersistenceProvider.cpp \
-    Account.cpp \
     MainWindow.cpp \
     NewAccountDialog.cpp \
     NewTransactionDialog.cpp
 
 HEADERS += \
-    Account.h \
     DataBaseManager.h \
     IPersistenceProvider.h \
     SqlitePersistenceProvider.h \
     PersistenceProvider.h \
     MainWindow.h \
     NewAccountDialog.h \
-    NewTransactionDialog.h
+    NewTransactionDialog.h \
+    Account.h
 
 FORMS += \
         mainwindow.ui \

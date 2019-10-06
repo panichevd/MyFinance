@@ -1,3 +1,4 @@
+#include <QSqlQuery>
 #include <QSqlRecord>
 #include "DataBaseManager.h"
 #include "SqlitePersistenceProvider.h"
@@ -9,27 +10,39 @@ DataBaseManager::DataBaseManager() :
 {
     m_persistence_provider = std::make_unique<SqlitePersistenceProvider>();
 
-    m_persistence_provider->read_data();
+    m_persistence_provider->read_data(m_accounts);
 }
 
-void DataBaseManager::add_account(const Account & account)
+void DataBaseManager::add_account(
+        const QString & name,
+        double balance)
 {
+    // TODO: move to Persistence provider. return abstract model instead of concrete
     QSqlRecord record = accounts_model()->record();
     record.setGenerated("id", false);
-    record.setValue("name", account.name());
-    record.setValue("balance", account.balance());
+    record.setValue("name", name);
+    record.setValue("balance", balance);
 
     accounts_model()->insertRecord(-1, record);
     accounts_model()->submitAll();
+
+    int id = accounts_model()->query().lastInsertId().toInt();
+    m_accounts[name] = Account(id, name, balance);
 }
 
-void DataBaseManager::add_transaction(
+bool DataBaseManager::add_transaction(
         double sum,
-        int account_id,
+        const QString & account_name,
         const QDate & date,
         const QTime & time)
 {
-    m_persistence_provider->add_transaction(sum, account_id, date, time);
+    auto it = m_accounts.find(account_name);
+    if (it == m_accounts.end()) {
+        return false;
+    }
+
+    m_persistence_provider->add_transaction(sum, it->second.id(), date, time);
+    return true;
 }
 
 } //namespace MyFinance

@@ -28,7 +28,7 @@ void NewAccountDialog::accept()
     auto name = ui->nameLineEdit->text();
     auto balance = ui->balanceLineEdit->text().toDouble();
 
-    m_dbm.add_account(Account(name, balance));
+    m_dbm.add_account(name, balance);
 
     QDialog::accept();
 }

@@ -1,6 +1,5 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
-#include "Account.h"
 #include "NewAccountDialog.h"
 #include "NewTransactionDialog.h"
 

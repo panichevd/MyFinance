@@ -12,10 +12,10 @@ public:
     virtual bool add(
             DataBaseManager & dbm,
             double sum,
-            int account_id,
+            const QString & account_name,
             const QDate & date,
             const QTime & time,
-            int account_id2 = 0) = 0;
+            const QString & account2_name) = 0;
 };
 
 namespace {
@@ -27,14 +27,13 @@ public:
     virtual bool add(
             DataBaseManager & dbm,
             double sum,
-            int account_id,
+            const QString & account_name,
             const QDate & date,
             const QTime & time,
-            int account_id2 = 0) override
+            const QString & account2_name) override
     {
-        Q_ASSERT(account_id2 == 0);
-        dbm.add_transaction(sum, account_id, date, time);
-        return true;
+        Q_ASSERT(account2_name.isEmpty());
+        return dbm.add_transaction(sum, account_name, date, time);
     }
 };
 
@@ -45,14 +44,13 @@ public:
     virtual bool add(
             DataBaseManager & dbm,
             double sum,
-            int account_id,
+            const QString & account_name,
             const QDate & date,
             const QTime & time,
-            int account_id2 = 0) override
+            const QString & account2_name) override
     {
-        Q_ASSERT(account_id2 == 0);
-        dbm.add_transaction(-sum, account_id, date, time);
-        return true;
+        Q_ASSERT(account2_name.isEmpty());
+        return dbm.add_transaction(-sum, account_name, date, time);
     }
 };
 
@@ -63,12 +61,12 @@ public:
     virtual bool add(
             DataBaseManager & dbm,
             double sum,
-            int account_id,
+            const QString & account_name,
             const QDate & date,
             const QTime & time,
-            int account_id2 = 0) override
+            const QString & account2_name) override
     {
-        if (account_id2 == 0) {
+        if (account2_name.isEmpty()) {
             QMessageBox::information(nullptr, "", "Please enter a valid account id");
             return false;
         }
@@ -136,13 +134,13 @@ void NewTransactionDialog::on_transferRadioButton_clicked()
 
 void NewTransactionDialog::accept()
 {
-    auto sum         = ui->sumLineEdit->text().toDouble();
-    auto account_id  = ui->accountLineEdit->text().toInt(); // TODO: lookup by name
-    auto account_id2 = ui->account2Edit->text().toInt();
-    auto date        = ui->dateEdit->date();
-    auto time        = ui->timeEdit->time();
+    auto sum            = ui->sumLineEdit->text().toDouble();
+    auto account_name   = ui->accountLineEdit->text();
+    auto account2_name  = ui->account2Edit->text();
+    auto date           = ui->dateEdit->date();
+    auto time           = ui->timeEdit->time();
 
-    if (m_current_state->add(m_dbm, sum, account_id, date, time, account_id2)) {
+    if (m_current_state->add(m_dbm, sum, account_name, date, time, account2_name)) {
         QDialog::accept();
     }
 }

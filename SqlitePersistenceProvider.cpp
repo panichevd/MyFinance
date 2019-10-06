@@ -1,5 +1,4 @@
 #include "SqlitePersistenceProvider.h"
-#include "Account.h"
 
 #include <QDate>
 #include <QDebug>
@@ -37,13 +36,15 @@ SqlitePersistenceProvider::~SqlitePersistenceProvider()
     m_db.close();
 }
 
-void SqlitePersistenceProvider::read_data()
+void SqlitePersistenceProvider::read_data(
+        std::map<QString, Account> & accounts)
 {
-    read_accounts();
+    read_accounts(accounts);
     read_transactions();
 }
 
-void SqlitePersistenceProvider::read_accounts()
+void SqlitePersistenceProvider::read_accounts(
+        std::map<QString, Account> & accounts)
 {    
     QSqlQuery query;
     query.prepare("CREATE TABLE IF NOT EXISTS accounts("
@@ -58,11 +59,20 @@ void SqlitePersistenceProvider::read_accounts()
 
     m_accounts_model->setTable("accounts");
     m_accounts_model->select();
+
+    query.prepare("SELECT * FROM accounts");
+    query.exec();
+    while (query.next()) {
+        int id         = query.value(0).toInt();
+        QString name   = query.value(1).toString();
+        double balance = query.value(2).toDouble();
+
+        accounts[name] = Account(id, name, balance);
+    }
 }
 
 void SqlitePersistenceProvider::read_transactions()
 {
-    // TODO: account name (via proxy model?)
     QSqlQuery query;
     query.prepare("CREATE TABLE IF NOT EXISTS transactions("
                   "id INTEGER PRIMARY KEY, "
@@ -83,8 +93,9 @@ void SqlitePersistenceProvider::read_transactions()
     while (query.next()) {
         QString date = query.value(0).toString();
 
-        QSqlTableModel *transactions_model = new QSqlTableModel(this, m_db);
+        QSqlRelationalTableModel *transactions_model = new QSqlRelationalTableModel(this, m_db);
         transactions_model->setTable("transactions");
+        transactions_model->setRelation(2, QSqlRelation("accounts", "id", "name"));
         transactions_model->setFilter("date=" + ("date('" + date + "')"));
         transactions_model->select();
 
@@ -114,6 +125,8 @@ void SqlitePersistenceProvider::add_transaction(
                       "date('" + date.toString("yyyy-MM-dd") + "'), "
                       "time('" + time.toString() + "'));");
     query.exec();
+
+    // TODO: update m_transactions
 }
 
 } //namespace MyFinance

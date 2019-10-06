@@ -14,7 +14,9 @@ public:
     SqlitePersistenceProvider();
     virtual ~SqlitePersistenceProvider();
 
-    virtual void read_data() override final;
+    virtual void read_data(
+            std::map<QString, Account> & accounts)
+            override final;
 
     virtual void add_transaction(
             double sum,
@@ -23,7 +25,7 @@ public:
             const QTime & time) override final;
 
 private:
-    void read_accounts();
+    void read_accounts(std::map<QString, Account> & accounts);
     void read_transactions();
 
 private:

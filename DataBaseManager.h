@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "Account.h"
 #include "IPersistenceProvider.h"
 
 namespace MyFinance {
@@ -19,16 +20,20 @@ public:
     IPersistenceProvider::Transactions & transactions()
     { return m_persistence_provider->transactions(); }
 
-    void add_account(const Account & account);
+    void add_account(
+            const QString & name,
+            double balance);
 
-    void add_transaction(
+    bool add_transaction(
             double sum,
-            int account_id,
+            const QString & account_name,
             const QDate & date,
             const QTime & time);
 
 private:
     std::unique_ptr<IPersistenceProvider> m_persistence_provider;
+
+    std::map<QString, Account> m_accounts;
 };
 
 } //namespace MyFinance

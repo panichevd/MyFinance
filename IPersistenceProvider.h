@@ -3,6 +3,7 @@
 
 #include <QException>
 #include <QObject>
+#include <QSqlRelationalTableModel>
 #include <QSqlTableModel>
 
 #include <memory>
@@ -40,14 +41,14 @@ class IPersistenceProvider : public QObject
 public:
     typedef std::map<
         QString,
-        QSqlTableModel*,
+        QSqlRelationalTableModel*,
         std::greater<QString>> Transactions;
 
 public:
     IPersistenceProvider() = default;
     virtual ~IPersistenceProvider() = default;
 
-    virtual void read_data() = 0;
+    virtual void read_data(std::map<QString, Account> & accounts) = 0;
 
     virtual QSqlTableModel* & model() = 0;
     virtual Transactions    & transactions() = 0;
