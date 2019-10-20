@@ -31,7 +31,7 @@ private:
     Ui::MainWindow *ui;
 
 private:
-    DataBaseManager m_db_manager;
+    std::unique_ptr<DataBaseManager> m_db_manager;
 };
 
 } //namespace MyFinance

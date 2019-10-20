@@ -67,11 +67,20 @@ public:
             const QString & account2_name) override
     {
         if (account2_name.isEmpty()) {
-            QMessageBox::information(nullptr, "", "Please enter a valid account id");
+            QMessageBox::information(
+                        nullptr, "", "Please enter a valid account id");
             return false;
         }
-        // TODO
-        return true;
+
+        if (account_name == account2_name) {
+            QMessageBox::information(
+                        nullptr,
+                        "",
+                        "You cannot transfer money to the same account");
+            return false;
+        }
+
+        return dbm.add_transfer(sum, account_name, account2_name, date, time);
     }
 };
 

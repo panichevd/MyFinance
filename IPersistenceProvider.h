@@ -53,9 +53,21 @@ public:
     virtual QSqlTableModel* & model() = 0;
     virtual Transactions    & transactions() = 0;
 
-    virtual void add_transaction(
+    virtual bool add_account(
+            const QString & name,
+            double balance,
+            int & id) = 0;
+
+    virtual bool add_transaction(
             double sum,
             int account_id,
+            const QDate & date,
+            const QTime & time) = 0;
+
+    virtual bool add_transfer(
+            double sum,
+            int account_id,
+            int account2_id,
             const QDate & date,
             const QTime & time) = 0;
 };

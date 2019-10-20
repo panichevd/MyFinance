@@ -16,21 +16,21 @@ namespace MyFinance {
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_db_manager()
+    m_db_manager(std::make_unique<DataBaseManager>())
 {
     ui->setupUi(this);
 
     setup_accounts();
     setup_transactions();
 
-    // TODO: db_manager as pointer. Catch exception
+    // TODO: Catch exception from dbm
 }
 
 void MainWindow::setup_accounts()
 {
     // TODO: error handling
     auto accounts_view = ui->accountsView;
-    accounts_view->setModel(m_db_manager.accounts_model());
+    accounts_view->setModel(m_db_manager->accounts_model()); // TODO: pass to dbm
     accounts_view->setEditTriggers(QTableView::NoEditTriggers);
     accounts_view->setColumnHidden(0, true);
     accounts_view->verticalHeader()->setVisible(false);
@@ -49,7 +49,7 @@ void MainWindow::setup_transactions()
     QFont font("Segoe UI");
     font.setPointSize(9);
 
-    const auto & transactions = m_db_manager.transactions();
+    const auto & transactions = m_db_manager->transactions();
     for (const auto & transaction : transactions) {
         QListWidgetItem * item = new QListWidgetItem;
         item->setFont(font);
@@ -82,13 +82,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_newAccountButton_clicked()
 {
-    NewAccountDialog dialog(m_db_manager);
+    NewAccountDialog dialog(*m_db_manager);
     dialog.exec();
 }
 
 void MainWindow::on_newTransactionButton_clicked()
 {
-    NewTransactionDialog dialog(m_db_manager);
+    NewTransactionDialog dialog(*m_db_manager);
     dialog.exec();
 }
 

@@ -29,6 +29,7 @@ SqlitePersistenceProvider::SqlitePersistenceProvider() :
     }
 
     m_accounts_model = new QSqlTableModel(this, m_db);
+    m_accounts_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
 }
 
 SqlitePersistenceProvider::~SqlitePersistenceProvider()
@@ -80,7 +81,9 @@ void SqlitePersistenceProvider::read_transactions()
                   "account_id INTEGER NOT NULL,"
                   "date TEXT NOT NULL,"
                   "time TEXT NOT NULL,"
-                  "FOREIGN KEY(account_id) REFERENCES accounts(id))");
+                  "account2_id INTEGER,"
+                  "FOREIGN KEY(account_id) REFERENCES accounts(id),"
+                  "FOREIGN KEY(account2_id) REFERENCES accounts(id))");
     if (!query.exec()) {
         throw PersistenceException(
                     "Sql Error: "         + query.lastError().text() +
@@ -93,40 +96,168 @@ void SqlitePersistenceProvider::read_transactions()
     while (query.next()) {
         QString date = query.value(0).toString();
 
-        QSqlRelationalTableModel *transactions_model = new QSqlRelationalTableModel(this, m_db);
+        QSqlRelationalTableModel *transactions_model =
+                new QSqlRelationalTableModel(this, m_db);
+        transactions_model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
+        transactions_model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
         transactions_model->setTable("transactions");
         transactions_model->setRelation(2, QSqlRelation("accounts", "id", "name"));
+        transactions_model->setHeaderData(2, Qt::Horizontal, "account");
+        transactions_model->setRelation(5, QSqlRelation("accounts", "id", "name"));
         transactions_model->setFilter("date=" + ("date('" + date + "')"));
         transactions_model->select();
 
         m_transactions[date] = transactions_model;
     }
-
-    /*for (int i = 1; i < 20; ++ i) {
-        query.prepare("INSERT INTO transactions (sum, account_id, date, time) VALUES(" + QString::number(300) + ", 1, date('" + QString::number(2010 + i) + "-10-16'), time('now'));");
-        query.exec();
-        qDebug() << "Sql Error: "         + query.lastError().text() +
-                    ". Executing query: " + query.executedQuery();
-    }*/
 }
 
-void SqlitePersistenceProvider::add_transaction(
+bool SqlitePersistenceProvider::add_account(
+        const QString & name,
+        double balance,
+        int & id)
+{
+    QSqlRecord record = m_accounts_model->record();
+    record.setGenerated("id", false);
+    record.setValue("name", name);
+    record.setValue("balance", balance);
+
+    if (!m_accounts_model->insertRecord(-1, record)) {
+        return false;
+    }
+
+    if (!m_accounts_model->submitAll()) {
+        return false;
+    }
+
+    id = m_accounts_model->query().lastInsertId().toInt();
+    return true;
+}
+
+bool SqlitePersistenceProvider::add_transaction(
         double sum,
         int account_id,
         const QDate & date,
         const QTime & time)
 {
-    QSqlQuery query;
+    // TODO: emit signal when new model is added
+    const QString & date_string = date.toString("yyyy-MM-dd");
 
-    query.prepare("INSERT INTO transactions (sum, account_id, date, time) "
-                  "VALUES(" +
-                      QString::number(sum) + ", " +
-                      QString::number(account_id) + ", "
-                      "date('" + date.toString("yyyy-MM-dd") + "'), "
-                      "time('" + time.toString() + "'));");
-    query.exec();
+    QSqlRelationalTableModel *transactions_model = nullptr;
+    auto it = m_transactions.find(date_string);
+    if (it == m_transactions.end()) {
+        transactions_model = new QSqlRelationalTableModel(this, m_db);
+        transactions_model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
+        transactions_model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+        transactions_model->setTable("transactions");
+        transactions_model->setRelation(2, QSqlRelation("accounts", "id", "account"));
+        transactions_model->setHeaderData(2, Qt::Horizontal, "account");
+        transactions_model->setRelation(5, QSqlRelation("accounts", "id", "name"));
+        transactions_model->setFilter("date=" + ("date('" + date_string + "')"));
+        transactions_model->select();
 
-    // TODO: update m_transactions
+        m_transactions[date_string] = transactions_model;
+    } else {
+        transactions_model = it->second;
+    }
+
+    QSqlRecord record = transactions_model->record();
+    record.setGenerated("id", false);
+    record.setValue("sum", sum);
+    record.setValue(2, account_id); // renamed in QSqlRelationalModel::setRelation()
+    record.setValue("date", date_string);
+    record.setValue("time", time.toString());
+
+    if (!transactions_model->insertRecord(-1, record)) {
+        qDebug() << "Failed to insert new transaction:"
+                 << transactions_model->lastError();
+        return false;
+    }
+
+    for (int i = 0; i < m_accounts_model->rowCount(); ++i) {
+        QSqlRecord record = m_accounts_model->record(i);
+        if (record.value("id").toInt() == account_id) {
+            record.setValue("balance", record.value("balance").toDouble() + sum);
+
+            if (!m_accounts_model->setRecord(i, record)) {
+                qDebug() << "Failed to modify account balance: "
+                         << m_accounts_model->lastError();
+                transactions_model->revertAll();
+                return false;
+            }
+        }
+    }
+
+    return transactions_model->submitAll() && m_accounts_model->submitAll();
+}
+
+bool SqlitePersistenceProvider::add_transfer(
+        double sum,
+        int account_id,
+        int account2_id,
+        const QDate & date,
+        const QTime & time)
+{
+    // TODO: join with add_transaction
+    const QString & date_string = date.toString("yyyy-MM-dd");
+
+    QSqlRelationalTableModel *transactions_model = nullptr;
+    auto it = m_transactions.find(date_string);
+    if (it == m_transactions.end()) {
+        transactions_model = new QSqlRelationalTableModel(this, m_db);
+        transactions_model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
+        transactions_model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+        transactions_model->setTable("transactions");
+        transactions_model->setRelation(2, QSqlRelation("accounts", "id", "account"));
+        transactions_model->setHeaderData(2, Qt::Horizontal, "account");
+        transactions_model->setRelation(5, QSqlRelation("accounts", "id", "name"));
+        transactions_model->setFilter("date=" + ("date('" + date_string + "')"));
+        transactions_model->select();
+
+        m_transactions[date_string] = transactions_model;
+    } else {
+        transactions_model = it->second;
+    }
+
+    QSqlRecord record = transactions_model->record();
+    record.setGenerated("id", false);
+    record.setValue("sum", sum);
+    record.setValue(2, account_id); // renamed in QSqlRelationalModel::setRelation()
+    record.setValue("date", date_string);
+    record.setValue("time", time.toString());
+    record.setValue(5, account2_id);
+
+    if (!transactions_model->insertRecord(-1, record)) {
+        qDebug() << "Failed to insert new transaction:"
+                 << transactions_model->lastError();
+        return false;
+    }
+
+    for (int i = 0; i < m_accounts_model->rowCount(); ++i) {
+        QSqlRecord record = m_accounts_model->record(i);
+        if (record.value("id").toInt() == account_id) {
+            record.setValue("balance", record.value("balance").toDouble() - sum);
+
+            if (!m_accounts_model->setRecord(i, record)) {
+                qDebug() << "Failed to modify account balance: "
+                         << m_accounts_model->lastError();
+                m_accounts_model->revertAll();
+                transactions_model->revertAll();
+                return false;
+            }
+        } else if (record.value("id").toInt() == account2_id) {
+            record.setValue("balance", record.value("balance").toDouble() + sum);
+
+            if (!m_accounts_model->setRecord(i, record)) {
+                qDebug() << "Failed to modify account balance: "
+                         << m_accounts_model->lastError();
+                m_accounts_model->revertAll();
+                transactions_model->revertAll();
+                return false;
+            }
+        }
+    }
+
+    return transactions_model->submitAll() && m_accounts_model->submitAll();
 }
 
 } //namespace MyFinance

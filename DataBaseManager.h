@@ -30,6 +30,13 @@ public:
             const QDate & date,
             const QTime & time);
 
+    bool add_transfer(
+            double sum,
+            const QString & account_name,
+            const QString & account2_name,
+            const QDate & date,
+            const QTime & time);
+
 private:
     std::unique_ptr<IPersistenceProvider> m_persistence_provider;
 

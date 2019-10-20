@@ -18,9 +18,21 @@ public:
             std::map<QString, Account> & accounts)
             override final;
 
-    virtual void add_transaction(
+    virtual bool add_account(
+            const QString & name,
+            double balance,
+            int & id) override final;
+
+    virtual bool add_transaction(
             double sum,
             int account_id,
+            const QDate & date,
+            const QTime & time) override final;
+
+    virtual bool add_transfer(
+            double sum,
+            int account_id,
+            int account2_id,
             const QDate & date,
             const QTime & time) override final;
 
