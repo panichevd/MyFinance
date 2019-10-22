@@ -40,6 +40,8 @@ private:
     void read_accounts(std::map<QString, Account> & accounts);
     void read_transactions();
 
+    QSqlRelationalTableModel * get_transaction_table(const QString & date);
+
 private:
     QSqlDatabase m_db;
 };

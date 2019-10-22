@@ -27,9 +27,6 @@ SqlitePersistenceProvider::SqlitePersistenceProvider() :
                     "Could not open data base. Error: " +
                     m_db.lastError().text());
     }
-
-    m_accounts_model = new QSqlTableModel(this, m_db);
-    m_accounts_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
 }
 
 SqlitePersistenceProvider::~SqlitePersistenceProvider()
@@ -58,6 +55,8 @@ void SqlitePersistenceProvider::read_accounts(
                     ". Executing query: " + query.executedQuery());
     }
 
+    m_accounts_model = new QSqlTableModel(this, m_db);
+    m_accounts_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     m_accounts_model->setTable("accounts");
     m_accounts_model->select();
 
@@ -95,9 +94,17 @@ void SqlitePersistenceProvider::read_transactions()
 
     while (query.next()) {
         QString date = query.value(0).toString();
+        get_transaction_table(date);
+    }
+}
 
-        QSqlRelationalTableModel *transactions_model =
-                new QSqlRelationalTableModel(this, m_db);
+QSqlRelationalTableModel * SqlitePersistenceProvider::get_transaction_table(
+        const QString & date)
+{
+    QSqlRelationalTableModel *transactions_model = nullptr;
+    auto it = m_transactions.find(date);
+    if (it == m_transactions.end()) {
+        transactions_model = new QSqlRelationalTableModel(this, m_db);
         transactions_model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
         transactions_model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
         transactions_model->setTable("transactions");
@@ -108,7 +115,12 @@ void SqlitePersistenceProvider::read_transactions()
         transactions_model->select();
 
         m_transactions[date] = transactions_model;
+    } else {
+        transactions_model = it->second;
     }
+
+
+    return transactions_model;
 }
 
 bool SqlitePersistenceProvider::add_account(
@@ -142,28 +154,13 @@ bool SqlitePersistenceProvider::add_transaction(
     // TODO: emit signal when new model is added
     const QString & date_string = date.toString("yyyy-MM-dd");
 
-    QSqlRelationalTableModel *transactions_model = nullptr;
-    auto it = m_transactions.find(date_string);
-    if (it == m_transactions.end()) {
-        transactions_model = new QSqlRelationalTableModel(this, m_db);
-        transactions_model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
-        transactions_model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
-        transactions_model->setTable("transactions");
-        transactions_model->setRelation(2, QSqlRelation("accounts", "id", "account"));
-        transactions_model->setHeaderData(2, Qt::Horizontal, "account");
-        transactions_model->setRelation(5, QSqlRelation("accounts", "id", "name"));
-        transactions_model->setFilter("date=" + ("date('" + date_string + "')"));
-        transactions_model->select();
-
-        m_transactions[date_string] = transactions_model;
-    } else {
-        transactions_model = it->second;
-    }
+    QSqlRelationalTableModel *transactions_model =
+            get_transaction_table(date_string);
 
     QSqlRecord record = transactions_model->record();
     record.setGenerated("id", false);
     record.setValue("sum", sum);
-    record.setValue(2, account_id); // renamed in QSqlRelationalModel::setRelation()
+    record.setValue(2, account_id); // relation
     record.setValue("date", date_string);
     record.setValue("time", time.toString());
 
@@ -197,34 +194,18 @@ bool SqlitePersistenceProvider::add_transfer(
         const QDate & date,
         const QTime & time)
 {
-    // TODO: join with add_transaction
     const QString & date_string = date.toString("yyyy-MM-dd");
 
-    QSqlRelationalTableModel *transactions_model = nullptr;
-    auto it = m_transactions.find(date_string);
-    if (it == m_transactions.end()) {
-        transactions_model = new QSqlRelationalTableModel(this, m_db);
-        transactions_model->setEditStrategy(QSqlRelationalTableModel::OnManualSubmit);
-        transactions_model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
-        transactions_model->setTable("transactions");
-        transactions_model->setRelation(2, QSqlRelation("accounts", "id", "account"));
-        transactions_model->setHeaderData(2, Qt::Horizontal, "account");
-        transactions_model->setRelation(5, QSqlRelation("accounts", "id", "name"));
-        transactions_model->setFilter("date=" + ("date('" + date_string + "')"));
-        transactions_model->select();
-
-        m_transactions[date_string] = transactions_model;
-    } else {
-        transactions_model = it->second;
-    }
+    QSqlRelationalTableModel *transactions_model =
+            get_transaction_table(date_string);
 
     QSqlRecord record = transactions_model->record();
     record.setGenerated("id", false);
     record.setValue("sum", sum);
-    record.setValue(2, account_id); // renamed in QSqlRelationalModel::setRelation()
+    record.setValue(2, account_id); // relation
     record.setValue("date", date_string);
     record.setValue("time", time.toString());
-    record.setValue(5, account2_id);
+    record.setValue(5, account2_id); // relation
 
     if (!transactions_model->insertRecord(-1, record)) {
         qDebug() << "Failed to insert new transaction:"

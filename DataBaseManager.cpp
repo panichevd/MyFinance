@@ -6,10 +6,8 @@
 namespace MyFinance {
 
 DataBaseManager::DataBaseManager() :
-    m_persistence_provider(nullptr)
+    m_persistence_provider(std::make_unique<SqlitePersistenceProvider>())
 {
-    m_persistence_provider = std::make_unique<SqlitePersistenceProvider>();
-
     m_persistence_provider->read_data(m_accounts);
 }
 
@@ -35,7 +33,8 @@ bool DataBaseManager::add_transaction(
     }
     int account_id = it->second.id();
 
-    return m_persistence_provider->add_transaction(sum, account_id, date, time);
+    return m_persistence_provider->add_transaction(
+                sum, account_id, date, time);
 }
 
 bool DataBaseManager::add_transfer(
