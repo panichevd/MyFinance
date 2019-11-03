@@ -3,6 +3,8 @@
 
 #include <QListWidget>
 
+#include "DataBaseManager.h"
+
 class TransactionsListWidget :
     public QListWidget
 {
@@ -10,6 +12,11 @@ class TransactionsListWidget :
 
 public:
     TransactionsListWidget(QWidget *parent = nullptr);
+
+    void setup_transactions(MyFinance::DataBaseManager & dbm);
+
+private:
+    QFont m_font;
 };
 
 #endif // TRANSACTIONSLISTWIDGET_H
