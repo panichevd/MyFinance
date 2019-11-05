@@ -119,7 +119,6 @@ QSqlRelationalTableModel * SqlitePersistenceProvider::get_transaction_table(
         transactions_model = it->second;
     }
 
-
     return transactions_model;
 }
 
@@ -151,7 +150,6 @@ bool SqlitePersistenceProvider::add_transaction(
         const QDate & date,
         const QTime & time)
 {
-    // TODO: emit signal when new model is added
     const QString & date_string = date.toString("yyyy-MM-dd");
 
     QSqlRelationalTableModel *transactions_model =
@@ -184,7 +182,12 @@ bool SqlitePersistenceProvider::add_transaction(
         }
     }
 
-    return transactions_model->submitAll() && m_accounts_model->submitAll();
+    if (!transactions_model->submitAll() || !m_accounts_model->submitAll()) {
+        return false;
+    }
+
+    emit transactionsTableAdded(date_string, transactions_model);
+    return true;
 }
 
 bool SqlitePersistenceProvider::add_transfer(
@@ -238,7 +241,12 @@ bool SqlitePersistenceProvider::add_transfer(
         }
     }
 
-    return transactions_model->submitAll() && m_accounts_model->submitAll();
+    if (!transactions_model->submitAll() || !m_accounts_model->submitAll()) {
+        return false;
+    }
+
+    emit transactionsTableAdded(date_string, transactions_model);
+    return true;
 }
 
 } //namespace MyFinance

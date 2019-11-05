@@ -1,6 +1,8 @@
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
 
+#include <QString>
+
 namespace MyFinance {
 
 class Account

@@ -9,6 +9,7 @@ DataBaseManager::DataBaseManager() :
     m_persistence_provider(std::make_unique<SqlitePersistenceProvider>())
 {
     m_persistence_provider->read_data(m_accounts);
+    this->connect(m_persistence_provider.get(), &IPersistenceProvider::transactionsTableAdded, this, &DataBaseManager::transactionsTableAdded);
 }
 
 void DataBaseManager::add_account(

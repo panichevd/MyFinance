@@ -70,6 +70,11 @@ public:
             int account2_id,
             const QDate & date,
             const QTime & time) = 0;
+
+signals:
+    void transactionsTableAdded(
+            const QString & date,
+            QSqlRelationalTableModel * transactions);
 };
 
 } //namespace MyFinance

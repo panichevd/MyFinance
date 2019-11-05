@@ -8,8 +8,11 @@
 
 namespace MyFinance {
 
-class DataBaseManager
+class DataBaseManager :
+        public QObject
 {
+    Q_OBJECT
+
 public:
     DataBaseManager();
     ~DataBaseManager() = default;
@@ -36,6 +39,11 @@ public:
             const QString & account2_name,
             const QDate & date,
             const QTime & time);
+
+signals:
+    void transactionsTableAdded(
+            const QString & date,
+            QSqlRelationalTableModel * transactions);
 
 private:
     std::unique_ptr<IPersistenceProvider> m_persistence_provider;

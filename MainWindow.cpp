@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setup_accounts();
     setup_transactions();
 
+    QObject::connect(m_db_manager.get(), &DataBaseManager::transactionsTableAdded, ui->listWidget, &TransactionsListWidget::onTransactionsTableAdded);
+
     // TODO: Catch exception from dbm
 }
 
